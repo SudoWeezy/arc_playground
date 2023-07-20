@@ -1,0 +1,30 @@
+{
+    "name": "ARC72",
+    "methods": [
+        {
+            "name": "arc72_ownerOf",
+            "args": [
+                {
+                    "type": "uint64",
+                    "name": "tokenId"
+                }
+            ],
+            "returns": {
+                "type": "address"
+            }
+        },
+        {
+            "name": "arc72_tokenURI",
+            "args": [
+                {
+                    "type": "uint64",
+                    "name": "tokenId"
+                }
+            ],
+            "returns": {
+                "type": "byte[32]"
+            }
+        }
+    ],
+    "networks": {}
+}

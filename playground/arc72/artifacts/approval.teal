@@ -1,0 +1,125 @@
+#pragma version 8
+intcblock 0 1
+bytecblock 0x 0x151f7c75
+txn NumAppArgs
+intc_0 // 0
+==
+bnz main_l6
+txna ApplicationArgs 0
+pushbytes 0xc8d5518d // "arc72_ownerOf(uint64)address"
+==
+bnz main_l5
+txna ApplicationArgs 0
+pushbytes 0x990b9693 // "arc72_tokenURI(uint64)byte[32]"
+==
+bnz main_l4
+err
+main_l4:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub arc72tokenURIcaster_3
+intc_1 // 1
+return
+main_l5:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub arc72ownerOfcaster_2
+intc_1 // 1
+return
+main_l6:
+txn OnCompletion
+intc_0 // NoOp
+==
+bnz main_l8
+err
+main_l8:
+txn ApplicationID
+intc_0 // 0
+==
+assert
+intc_1 // 1
+return
+
+// arc72_ownerOf
+arc72ownerOf_0:
+proto 1 1
+bytec_0 // ""
+dup
+frame_dig -1
+itob
+box_get
+store 1
+store 0
+load 1
+assert
+load 0
+frame_bury 1
+frame_dig 1
+extract 0 32
+frame_bury 0
+retsub
+
+// arc72_tokenURI
+arc72tokenURI_1:
+proto 1 1
+bytec_0 // ""
+dup
+frame_dig -1
+itob
+box_get
+store 3
+store 2
+load 3
+assert
+load 2
+frame_bury 1
+frame_dig 1
+extract 32 32
+frame_bury 0
+retsub
+
+// arc72_ownerOf_caster
+arc72ownerOfcaster_2:
+proto 0 0
+bytec_0 // ""
+intc_0 // 0
+txna ApplicationArgs 1
+btoi
+frame_bury 1
+frame_dig 1
+callsub arc72ownerOf_0
+frame_bury 0
+bytec_1 // 0x151f7c75
+frame_dig 0
+concat
+log
+retsub
+
+// arc72_tokenURI_caster
+arc72tokenURIcaster_3:
+proto 0 0
+bytec_0 // ""
+intc_0 // 0
+txna ApplicationArgs 1
+btoi
+frame_bury 1
+frame_dig 1
+callsub arc72tokenURI_1
+frame_bury 0
+bytec_1 // 0x151f7c75
+frame_dig 0
+concat
+log
+retsub

@@ -1,0 +1,79 @@
+{
+    "hints": {
+        "arc72_ownerOf(uint64)address": {
+            "read_only": true,
+            "call_config": {
+                "no_op": "CALL"
+            }
+        },
+        "arc72_tokenURI(uint64)byte[32]": {
+            "read_only": true,
+            "call_config": {
+                "no_op": "CALL"
+            }
+        }
+    },
+    "source": {
+        "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMQpieXRlY2Jsb2NrIDB4IDB4MTUxZjdjNzUKdHhuIE51bUFwcEFyZ3MKaW50Y18wIC8vIDAKPT0KYm56IG1haW5fbDYKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHhjOGQ1NTE4ZCAvLyAiYXJjNzJfb3duZXJPZih1aW50NjQpYWRkcmVzcyIKPT0KYm56IG1haW5fbDUKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHg5OTBiOTY5MyAvLyAiYXJjNzJfdG9rZW5VUkkodWludDY0KWJ5dGVbMzJdIgo9PQpibnogbWFpbl9sNAplcnIKbWFpbl9sNDoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKY2FsbHN1YiBhcmM3MnRva2VuVVJJY2FzdGVyXzMKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDU6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KJiYKYXNzZXJ0CmNhbGxzdWIgYXJjNzJvd25lck9mY2FzdGVyXzIKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDY6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KYm56IG1haW5fbDgKZXJyCm1haW5fbDg6CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCj09CmFzc2VydAppbnRjXzEgLy8gMQpyZXR1cm4KCi8vIGFyYzcyX293bmVyT2YKYXJjNzJvd25lck9mXzA6CnByb3RvIDEgMQpieXRlY18wIC8vICIiCmR1cApmcmFtZV9kaWcgLTEKaXRvYgpib3hfZ2V0CnN0b3JlIDEKc3RvcmUgMApsb2FkIDEKYXNzZXJ0CmxvYWQgMApmcmFtZV9idXJ5IDEKZnJhbWVfZGlnIDEKZXh0cmFjdCAwIDMyCmZyYW1lX2J1cnkgMApyZXRzdWIKCi8vIGFyYzcyX3Rva2VuVVJJCmFyYzcydG9rZW5VUklfMToKcHJvdG8gMSAxCmJ5dGVjXzAgLy8gIiIKZHVwCmZyYW1lX2RpZyAtMQppdG9iCmJveF9nZXQKc3RvcmUgMwpzdG9yZSAyCmxvYWQgMwphc3NlcnQKbG9hZCAyCmZyYW1lX2J1cnkgMQpmcmFtZV9kaWcgMQpleHRyYWN0IDMyIDMyCmZyYW1lX2J1cnkgMApyZXRzdWIKCi8vIGFyYzcyX293bmVyT2ZfY2FzdGVyCmFyYzcyb3duZXJPZmNhc3Rlcl8yOgpwcm90byAwIDAKYnl0ZWNfMCAvLyAiIgppbnRjXzAgLy8gMAp0eG5hIEFwcGxpY2F0aW9uQXJncyAxCmJ0b2kKZnJhbWVfYnVyeSAxCmZyYW1lX2RpZyAxCmNhbGxzdWIgYXJjNzJvd25lck9mXzAKZnJhbWVfYnVyeSAwCmJ5dGVjXzEgLy8gMHgxNTFmN2M3NQpmcmFtZV9kaWcgMApjb25jYXQKbG9nCnJldHN1YgoKLy8gYXJjNzJfdG9rZW5VUklfY2FzdGVyCmFyYzcydG9rZW5VUkljYXN0ZXJfMzoKcHJvdG8gMCAwCmJ5dGVjXzAgLy8gIiIKaW50Y18wIC8vIDAKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQpidG9pCmZyYW1lX2J1cnkgMQpmcmFtZV9kaWcgMQpjYWxsc3ViIGFyYzcydG9rZW5VUklfMQpmcmFtZV9idXJ5IDAKYnl0ZWNfMSAvLyAweDE1MWY3Yzc1CmZyYW1lX2RpZyAwCmNvbmNhdApsb2cKcmV0c3Vi",
+        "clear": "I3ByYWdtYSB2ZXJzaW9uIDgKcHVzaGludCAwIC8vIDAKcmV0dXJu"
+    },
+    "state": {
+        "global": {
+            "num_byte_slices": 0,
+            "num_uints": 1
+        },
+        "local": {
+            "num_byte_slices": 0,
+            "num_uints": 0
+        }
+    },
+    "schema": {
+        "global": {
+            "declared": {
+                "index": {
+                    "type": "uint64",
+                    "key": "index",
+                    "descr": "index of token"
+                }
+            },
+            "reserved": {}
+        },
+        "local": {
+            "declared": {},
+            "reserved": {}
+        }
+    },
+    "contract": {
+        "name": "ARC72",
+        "methods": [
+            {
+                "name": "arc72_ownerOf",
+                "args": [
+                    {
+                        "type": "uint64",
+                        "name": "tokenId"
+                    }
+                ],
+                "returns": {
+                    "type": "address"
+                }
+            },
+            {
+                "name": "arc72_tokenURI",
+                "args": [
+                    {
+                        "type": "uint64",
+                        "name": "tokenId"
+                    }
+                ],
+                "returns": {
+                    "type": "byte[32]"
+                }
+            }
+        ],
+        "networks": {}
+    },
+    "bare_call_config": {
+        "no_op": "CREATE"
+    }
+}
