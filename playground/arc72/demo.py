@@ -27,10 +27,6 @@ def main() -> None:
         algod_client, application.app, signer=acct.signer
     )
 
-
-
-
-
     max_nft = 10
     # create the app
     app_id, app_address, _ = app_client.create()
@@ -70,14 +66,12 @@ def main() -> None:
     arc72_ownerOf = app_client.call(application.arc72_ownerOf, tokenId=0, boxes=[(0, 0)])
     print(arc72_ownerOf.return_value) 
 
-    print("AVANT 1")
     res=app_client_m.call(
         application.arc72_setApprovalForAll, 
         operator=admin.address,
         boxes=[[0, control]],
         sender=member.address,
         )
-    print("ICI 1")
     app_client_a.call(
         application.arc72_transferFrom,
         _from=member.address,
@@ -88,21 +82,18 @@ def main() -> None:
         )
     arc72_ownerOf = app_client.call(application.arc72_ownerOf, tokenId=0, boxes=[(0, 0)])
     print(arc72_ownerOf.return_value) 
-    print("AVANT 2")
-    # res=app_client_m.call(
-    #     application.arc72_setApprovalForAll, 
-    #     operator=admin.address,
-    #     boxes=[[0, control]],
-    #     sender=member.address,
-    #     )
-    print("ICI 2")
+    res=app_client_m.call(
+        application.arc72_setApprovalForAll, 
+        operator=admin.address,
+        boxes=[[0, control]],
+        sender=member.address,
+        )
     res=app_client.call(
         application.arc72_approve, 
         approved=admin.address,
         tokenId=0,
         boxes=[[0, 0]],
         )
-    print("ICI 3")
     control = abi_encode(application.Control(), (admin.address,acct.address))
     token = abi_encode(pt.abi.Uint64(), 0)
 
@@ -137,8 +128,6 @@ def main() -> None:
             print(f"Current Box: {box_key} ")
 
 
-    # arc72_ownerOf = app_client.call(application.arc72_ownerOf, tokenId=0, boxes=[(0, 0)])
-    # print(arc72_ownerOf.return_value) 
 
 if __name__ == "__main__":
     main()
