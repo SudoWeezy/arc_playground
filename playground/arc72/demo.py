@@ -1,67 +1,140 @@
 from algokit_utils import LogicError
 import application
-from beaker import client, sandbox, consts
+from beaker import client, localnet, consts, localnet
 from algosdk import encoding, abi
+import pyteal as pt
+import base64
+def abi_encode(abi_type, value):
+    record_codec = abi.ABIType.from_string(str(abi_type.type_spec()))
+    return record_codec.encode(value)
 
+def abi_decode(abi_type, value):
+    record_codec = abi.ABIType.from_string(str(abi_type.type_spec()))
+    return record_codec.decode(value)
 
 def main() -> None:
-    accts = sandbox.get_accounts()
-    acct = accts.pop()
-    member = accts.pop()
+    accts = localnet.get_accounts()
+    acct = accts.pop() #46FSPYUMSTZ3RVEAGI4WSC6ZGGHBB6FWL3M4DEL3PBPDVQTPVNSTTLYMGM
+    member = accts.pop() #WMXNIS3IC2JDEILZ4KAUVUBYDT6ABNDPPWQQT4X77NZDXTNFMY5EY3RJ4E
+    admin = accts.pop() #PHOJ23RY4NIS6KYVFUXQIRWI5PIZSP2GVWWXUJOCALZBNUAYVY2HL7YFBQ
 
-    algod_client = sandbox.get_algod_client()
+
+    print(acct.address)
+    print(member.address)
+    print(admin.address)
+    algod_client = localnet.get_algod_client()
     app_client = client.ApplicationClient(
         algod_client, application.app, signer=acct.signer
     )
 
+
+
+
+
+    max_nft = 10
     # create the app
     app_id, app_address, _ = app_client.create()
     print(f"Deployed Application ID: {app_id} Address: {app_address}")
 
+    app_client_m = client.ApplicationClient(
+        algod_client, application.app, app_id=app_id, signer=member.signer
+    )
+    app_client_a = client.ApplicationClient(
+        algod_client, application.app, app_id=app_id, signer=admin.signer
+    )
+
     # fund the app with enough to cover the min balance for the boxes we need
     # plus some extra to cover any boxes created with `fill_box`
-    min_balance = application.compute_min_balance(application.MAX_MEMBERS) * 2
+    min_balance = application.compute_min_balance(max_nft) * 2
     app_client.fund(min_balance)
 
-    # bootstrap to create the BoxList `members`
-    # note this must happen _after_ its been funded
-    app_client.call(application.bootstrap, boxes=[(0, b"members")])
+    # mint an nft for the user 
+    app_client.call(application.mint, to=acct.address, boxes=[(0, 0)])
 
-    # Call the method to add a new member
-    boxes = [(0, encoding.decode_address(member.address)), (0, b"members")]
-    app_client.call(application.add_member, addr=member.address, boxes=boxes)
+    arc72_ownerOf = app_client.call(application.arc72_ownerOf, tokenId=0, boxes=[(0, 0)])
+    print(arc72_ownerOf.return_value)
 
-    # We can read a box directly
-    box_contents = app_client.get_box_contents(encoding.decode_address(member.address))
-    decoded_box_contents = abi.ABIType.from_string("uint64").decode(box_contents)
-    print(decoded_box_contents)
+    arc72_tokenURI = app_client.call(application.arc72_tokenURI, tokenId=0, boxes=[(0, 0)])
+    print(bytearray(arc72_tokenURI.return_value).decode('utf-8').replace(" ",""))
+        
+    control = abi_encode(application.Control(), (admin.address,member.address))
 
-    # Or call the read-only method we've implemented
-    # to get the parsed version
-    result = app_client.call(application.read_balance, addr=member.address, boxes=boxes)
-    print(result.return_value)
+    arc72_transferFrom = app_client.call(
+        application.arc72_transferFrom,
+        _from=acct.address,
+        to=member.address,
+        tokenId=0,
+        boxes=[[0, 0],[0, control]]
+        )
 
-    # Set the balance and read it back out
-    app_client.call(
-        application.set_balance, addr=member.address, amount=100, boxes=boxes
-    )
-    result = app_client.call(application.read_balance, addr=member.address, boxes=boxes)
-    print(result.return_value)
+    arc72_ownerOf = app_client.call(application.arc72_ownerOf, tokenId=0, boxes=[(0, 0)])
+    print(arc72_ownerOf.return_value) 
 
-    # fill the box with some data
-    box_name = "mybox"
-    app_client.call(
-        application.fill_box,
-        box_name=box_name,
-        box_data=["hello", "world"],
-        boxes=[(0, box_name.encode())],
-    )
+    print("AVANT")
+    res=app_client_m.call(
+        application.arc72_setApprovalForAll, 
+        operator=admin.address,
+        boxes=[[0, control]],
+        sender=member.address,
+        )
+    print("ICI")
+    print(res.return_value) 
+    app_client_a.call(
+        application.arc72_transferFrom,
+        _from=member.address,
+        to=acct.address,
+        tokenId=0,
+        boxes=[[0, 0],[0, control]],
+        sender=admin.address
+        )
+    for box in app_client.client.application_boxes(app_client.app_id)["boxes"]:
+        name = base64.b64decode(box["name"])
+        if name == control:
+            contents = app_client.client.application_box_by_name(app_client.app_id, name)
+            box_key = abi_decode(application.Control(), name)
+            print(f"Current Box: {box_key} ")
+
+    arc72_ownerOf = app_client.call(application.arc72_ownerOf, tokenId=0, boxes=[(0, 0)])
+    print(arc72_ownerOf.return_value) 
+
+    # arc72_ownerOf = app_client.call(application.arc72_ownerOf, tokenId=0, boxes=[(0, 0)])
+    # print(arc72_ownerOf.return_value) 
+
+    # # Call the method to add a new member
+    # boxes = [(0, encoding.decode_address(member.address)), (0, b"members")]
+    # app_client.call(application.add_member, addr=member.address, boxes=boxes)
+
+    # # We can read a box directly
+    # box_contents = app_client.get_box_contents(encoding.decode_address(member.address))
+    # decoded_box_contents = abi.ABIType.from_string("uint64").decode(box_contents)
+    # print(decoded_box_contents)
+
+    # # Or call the read-only method we've implemented
+    # # to get the parsed version
+    # result = app_client.call(application.read_balance, addr=member.address, boxes=boxes)
+    # print(result.return_value)
+
+    # # Set the balance and read it back out
+    # app_client.call(
+    #     application.set_balance, addr=member.address, amount=100, boxes=boxes
+    # )
+    # result = app_client.call(application.read_balance, addr=member.address, boxes=boxes)
+    # print(result.return_value)
+
+    # # fill the box with some data
+    # box_name = "mybox"
+    # app_client.call(
+    #     application.fill_box,
+    #     box_name=box_name,
+    #     box_data=["hello", "world"],
+    #     boxes=[(0, box_name.encode())],
+    # )
     # read it back out
-    box_contents = app_client.get_box_contents(box_name.encode())
-    print(box_contents)
+    # box_contents = app_client.get_box_contents(box_name.encode())
+    # print(box_contents)
     # decode it using the sdk ABI methods
-    decoded_box_contents = abi.ABIType.from_string("string[]").decode(box_contents)
-    print(decoded_box_contents)
+    # decoded_box_contents = abi.ABIType.from_string("string[]").decode(box_contents)
+    # print(decoded_box_contents)
 
 
 if __name__ == "__main__":

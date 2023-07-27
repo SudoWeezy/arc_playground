@@ -1,20 +1,48 @@
 #pragma version 8
-intcblock 0 1
-bytecblock 0x 0x151f7c75
+intcblock 0 1 32 256 288
+bytecblock 0x 0x151f7c75 0x696e646578
 txn NumAppArgs
 intc_0 // 0
 ==
-bnz main_l6
+bnz main_l20
 txna ApplicationArgs 0
 pushbytes 0xc8d5518d // "arc72_ownerOf(uint64)address"
 ==
-bnz main_l5
+bnz main_l19
 txna ApplicationArgs 0
-pushbytes 0x990b9693 // "arc72_tokenURI(uint64)byte[32]"
+pushbytes 0x91268340 // "arc72_tokenURI(uint64)byte[256]"
 ==
-bnz main_l4
+bnz main_l18
+txna ApplicationArgs 0
+pushbytes 0x94b13c18 // "arc72_transferTo(address,uint64)void"
+==
+bnz main_l17
+txna ApplicationArgs 0
+pushbytes 0x9b4aead4 // "arc72_transferFrom(address,address,uint64)void"
+==
+bnz main_l16
+txna ApplicationArgs 0
+pushbytes 0x2146755f // "arc72_approve(address,uint64)void"
+==
+bnz main_l15
+txna ApplicationArgs 0
+pushbytes 0xccd7a82d // "arc72_setApprovalForAll(address)bool"
+==
+bnz main_l14
+txna ApplicationArgs 0
+pushbytes 0xac4cfadf // "mint(address)void"
+==
+bnz main_l13
+txna ApplicationArgs 0
+pushbytes 0x47c97411 // "arc72_totalSupply()uint64"
+==
+bnz main_l12
+txna ApplicationArgs 0
+pushbytes 0x52da51f2 // "arc72_tokenByIndex(uint64)uint64"
+==
+bnz main_l11
 err
-main_l4:
+main_l11:
 txn OnCompletion
 intc_0 // NoOp
 ==
@@ -23,10 +51,10 @@ intc_0 // 0
 !=
 &&
 assert
-callsub arc72tokenURIcaster_3
+callsub arc72tokenByIndexcaster_17
 intc_1 // 1
 return
-main_l5:
+main_l12:
 txn OnCompletion
 intc_0 // NoOp
 ==
@@ -35,16 +63,100 @@ intc_0 // 0
 !=
 &&
 assert
-callsub arc72ownerOfcaster_2
+callsub arc72totalSupplycaster_16
 intc_1 // 1
 return
-main_l6:
+main_l13:
 txn OnCompletion
 intc_0 // NoOp
 ==
-bnz main_l8
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub mintcaster_15
+intc_1 // 1
+return
+main_l14:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub arc72setApprovalForAllcaster_14
+intc_1 // 1
+return
+main_l15:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub arc72approvecaster_13
+intc_1 // 1
+return
+main_l16:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub arc72transferFromcaster_12
+intc_1 // 1
+return
+main_l17:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub arc72transferTocaster_11
+intc_1 // 1
+return
+main_l18:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub arc72tokenURIcaster_10
+intc_1 // 1
+return
+main_l19:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub arc72ownerOfcaster_9
+intc_1 // 1
+return
+main_l20:
+txn OnCompletion
+intc_0 // NoOp
+==
+bnz main_l22
 err
-main_l8:
+main_l22:
 txn ApplicationID
 intc_0 // 0
 ==
@@ -86,12 +198,229 @@ assert
 load 2
 frame_bury 1
 frame_dig 1
-extract 32 32
+intc_2 // 32
+intc_3 // 256
+extract3
+frame_bury 0
+retsub
+
+// arc72_transferTo
+arc72transferTo_2:
+proto 2 0
+bytec_0 // ""
+dupn 3
+intc_0 // 0
+dup
+bytec_0 // ""
+dup
+frame_dig -1
+itob
+box_get
+store 5
+store 4
+load 5
+assert
+load 4
+frame_bury 0
+frame_dig -2
+frame_bury 1
+frame_dig 0
+intc_2 // 32
+intc_3 // 256
+extract3
+frame_bury 2
+frame_dig 0
+intc 4 // 288
+dig 1
+len
+substring3
+frame_bury 3
+frame_dig 1
+frame_dig 2
+concat
+frame_dig 3
+concat
+frame_bury 0
+frame_dig -1
+itob
+box_del
+pop
+frame_dig -1
+itob
+frame_dig 0
+box_put
+retsub
+
+// arc72_transferFrom
+arc72transferFrom_3:
+proto 3 0
+bytec_0 // ""
+dupn 2
+frame_dig -1
+itob
+box_get
+store 7
+store 6
+load 7
+assert
+load 6
+frame_bury 0
+frame_dig 0
+intc 4 // 288
+dig 1
+len
+substring3
+frame_bury 1
+frame_dig 0
+extract 0 32
+frame_bury 2
+txn Sender
+frame_dig -3
+==
+frame_dig 1
+txn Sender
+==
+||
+frame_dig 2
+frame_dig -3
+app_local_get
+||
+assert
+frame_dig -2
+frame_dig -1
+callsub arc72transferTo_2
+retsub
+
+// arc72_approve
+arc72approve_4:
+proto 2 0
+bytec_0 // ""
+dupn 3
+intc_0 // 0
+dup
+bytec_0 // ""
+dup
+txn Sender
+frame_dig 1
+==
+bz arc72approve_4_l2
+frame_dig -1
+itob
+box_del
+pop
+frame_dig -1
+itob
+frame_dig 0
+box_put
+arc72approve_4_l2:
+retsub
+
+// arc72_setApprovalForAll
+arc72setApprovalForAll_5:
+proto 1 1
+intc_0 // 0
+txn Sender
+frame_dig -1
+app_local_get
+bnz arc72setApprovalForAll_5_l2
+txn Sender
+frame_dig -1
+intc_1 // 1
+app_local_put
+intc_1 // 1
+frame_bury 0
+b arc72setApprovalForAll_5_l3
+arc72setApprovalForAll_5_l2:
+txn Sender
+frame_dig -1
+app_local_del
+intc_0 // 0
+frame_bury 0
+arc72setApprovalForAll_5_l3:
+retsub
+
+// mint
+mint_6:
+proto 1 0
+intc_0 // 0
+bytec_0 // ""
+dupn 3
+intc_0 // 0
+dup
+bytec_0 // ""
+dup
+bytec_2 // "index"
+app_global_get
+pushint 10 // 10
+<
+assert
+bytec_2 // "index"
+app_global_get
+frame_bury 0
+frame_dig -1
+frame_bury 1
+frame_dig 1
+len
+intc_2 // 32
+==
+assert
+pushbytes 0x68747470733a2f2f6769746875622e636f6d2f616c676f72616e64666f756e646174696f6e2f4152437320202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020 // "https://github.com/algorandfoundation/ARCs                                                                                                                                                                                                                      "
+frame_bury 2
+intc_3 // 256
+frame_dig 2
+len
+==
+assert
+global ZeroAddress
+frame_bury 3
+frame_dig 3
+len
+intc_2 // 32
+==
+assert
+frame_dig 1
+frame_dig 2
+concat
+frame_dig 3
+concat
+frame_bury 4
+frame_dig 0
+itob
+box_del
+pop
+frame_dig 0
+itob
+frame_dig 4
+box_put
+frame_dig 1
+frame_dig 0
+callsub arc72transferTo_2
+bytec_2 // "index"
+frame_dig 0
+intc_1 // 1
++
+app_global_put
+retsub
+
+// arc72_totalSupply
+arc72totalSupply_7:
+proto 0 1
+intc_0 // 0
+bytec_2 // "index"
+app_global_get
+frame_bury 0
+retsub
+
+// arc72_tokenByIndex
+arc72tokenByIndex_8:
+proto 1 1
+intc_0 // 0
+frame_dig -1
 frame_bury 0
 retsub
 
 // arc72_ownerOf_caster
-arc72ownerOfcaster_2:
+arc72ownerOfcaster_9:
 proto 0 0
 bytec_0 // ""
 intc_0 // 0
@@ -108,7 +437,7 @@ log
 retsub
 
 // arc72_tokenURI_caster
-arc72tokenURIcaster_3:
+arc72tokenURIcaster_10:
 proto 0 0
 bytec_0 // ""
 intc_0 // 0
@@ -120,6 +449,115 @@ callsub arc72tokenURI_1
 frame_bury 0
 bytec_1 // 0x151f7c75
 frame_dig 0
+concat
+log
+retsub
+
+// arc72_transferTo_caster
+arc72transferTocaster_11:
+proto 0 0
+bytec_0 // ""
+intc_0 // 0
+txna ApplicationArgs 1
+frame_bury 0
+txna ApplicationArgs 2
+btoi
+frame_bury 1
+frame_dig 0
+frame_dig 1
+callsub arc72transferTo_2
+retsub
+
+// arc72_transferFrom_caster
+arc72transferFromcaster_12:
+proto 0 0
+bytec_0 // ""
+dup
+intc_0 // 0
+txna ApplicationArgs 1
+frame_bury 0
+txna ApplicationArgs 2
+frame_bury 1
+txna ApplicationArgs 3
+btoi
+frame_bury 2
+frame_dig 0
+frame_dig 1
+frame_dig 2
+callsub arc72transferFrom_3
+retsub
+
+// arc72_approve_caster
+arc72approvecaster_13:
+proto 0 0
+bytec_0 // ""
+intc_0 // 0
+txna ApplicationArgs 1
+frame_bury 0
+txna ApplicationArgs 2
+btoi
+frame_bury 1
+frame_dig 0
+frame_dig 1
+callsub arc72approve_4
+retsub
+
+// arc72_setApprovalForAll_caster
+arc72setApprovalForAllcaster_14:
+proto 0 0
+intc_0 // 0
+bytec_0 // ""
+txna ApplicationArgs 1
+frame_bury 1
+frame_dig 1
+callsub arc72setApprovalForAll_5
+frame_bury 0
+bytec_1 // 0x151f7c75
+pushbytes 0x00 // 0x00
+intc_0 // 0
+frame_dig 0
+setbit
+concat
+log
+retsub
+
+// mint_caster
+mintcaster_15:
+proto 0 0
+bytec_0 // ""
+txna ApplicationArgs 1
+frame_bury 0
+frame_dig 0
+callsub mint_6
+retsub
+
+// arc72_totalSupply_caster
+arc72totalSupplycaster_16:
+proto 0 0
+intc_0 // 0
+callsub arc72totalSupply_7
+frame_bury 0
+bytec_1 // 0x151f7c75
+frame_dig 0
+itob
+concat
+log
+retsub
+
+// arc72_tokenByIndex_caster
+arc72tokenByIndexcaster_17:
+proto 0 0
+intc_0 // 0
+dup
+txna ApplicationArgs 1
+btoi
+frame_bury 1
+frame_dig 1
+callsub arc72tokenByIndex_8
+frame_bury 0
+bytec_1 // 0x151f7c75
+frame_dig 0
+itob
 concat
 log
 retsub
