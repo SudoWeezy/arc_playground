@@ -70,15 +70,14 @@ def main() -> None:
     arc72_ownerOf = app_client.call(application.arc72_ownerOf, tokenId=0, boxes=[(0, 0)])
     print(arc72_ownerOf.return_value) 
 
-    print("AVANT")
+    print("AVANT 1")
     res=app_client_m.call(
         application.arc72_setApprovalForAll, 
         operator=admin.address,
         boxes=[[0, control]],
         sender=member.address,
         )
-    print("ICI")
-    print(res.return_value) 
+    print("ICI 1")
     app_client_a.call(
         application.arc72_transferFrom,
         _from=member.address,
@@ -87,6 +86,49 @@ def main() -> None:
         boxes=[[0, 0],[0, control]],
         sender=admin.address
         )
+    arc72_ownerOf = app_client.call(application.arc72_ownerOf, tokenId=0, boxes=[(0, 0)])
+    print(arc72_ownerOf.return_value) 
+    print("AVANT 2")
+    # res=app_client_m.call(
+    #     application.arc72_setApprovalForAll, 
+    #     operator=admin.address,
+    #     boxes=[[0, control]],
+    #     sender=member.address,
+    #     )
+    print("ICI 2")
+    res=app_client.call(
+        application.arc72_approve, 
+        approved=admin.address,
+        tokenId=0,
+        boxes=[[0, 0]],
+        )
+    print("ICI 3")
+    control = abi_encode(application.Control(), (admin.address,acct.address))
+    token = abi_encode(pt.abi.Uint64(), 0)
+
+    for box in app_client.client.application_boxes(app_client.app_id)["boxes"]:
+        name = base64.b64decode(box["name"])
+        if name == control:
+            contents = app_client.client.application_box_by_name(app_client.app_id, name)
+            box_key = abi_decode(application.Control(), name)
+            print(f"Current Box: {box_key} ")
+        if name == token:
+            contents = app_client.client.application_box_by_name(app_client.app_id, name)
+            print(contents)
+            contents = abi_decode(application.Token(), base64.b64decode(contents["value"]))
+            box_key = abi_decode(pt.abi.Uint64(), name)
+            print(f"Current Box: {box_key} {contents}")
+ 
+    app_client_a.call(
+        application.arc72_transferFrom,
+        _from=acct.address,
+        to=member.address,
+        tokenId=0,
+        boxes=[[0, 0],[0, control]],
+        sender=admin.address
+        )
+    arc72_ownerOf = app_client.call(application.arc72_ownerOf, tokenId=0, boxes=[(0, 0)])
+    print(arc72_ownerOf.return_value) 
     for box in app_client.client.application_boxes(app_client.app_id)["boxes"]:
         name = base64.b64decode(box["name"])
         if name == control:
@@ -94,8 +136,6 @@ def main() -> None:
             box_key = abi_decode(application.Control(), name)
             print(f"Current Box: {box_key} ")
 
-    arc72_ownerOf = app_client.call(application.arc72_ownerOf, tokenId=0, boxes=[(0, 0)])
-    print(arc72_ownerOf.return_value) 
 
     # arc72_ownerOf = app_client.call(application.arc72_ownerOf, tokenId=0, boxes=[(0, 0)])
     # print(arc72_ownerOf.return_value) 

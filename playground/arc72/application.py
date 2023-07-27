@@ -73,18 +73,12 @@ def transferTo(to: pt.abi.Address, tokenId: pt.abi.Uint64):
 @app.external
 def arc72_transferFrom(_from: pt.abi.Address, to: pt.abi.Address, tokenId: pt.abi.Uint64):
     pt.MethodSignature("arc72_Transfer(address,address,uint64)")
-    
-
     return pt.Seq(
-    
-    # (f := pt.abi.Address()).set(_from.get()),
-
         (t := Token()).decode(app.state.token_box[tokenId].get()),
         (c := pt.abi.Address()).set(t.controller),   
         (o := pt.abi.Address()).set(t.owner),    
         (operator := pt.abi.Address()).set(pt.Txn.sender()),  
         (key := Control()).set(operator, _from),
-        # (exist := pt.abi.Bool()).set(app.state.control_box[key].exists()),
         pt.If( pt.Or(
                     pt.Eq(pt.Txn.sender(), _from.get()),
                     pt.Eq(c.get(), pt.Txn.sender()),
@@ -102,14 +96,16 @@ def arc72_transferFrom(_from: pt.abi.Address, to: pt.abi.Address, tokenId: pt.ab
 @app.external
 def arc72_approve(approved: pt.abi.Address, tokenId: pt.abi.Uint64): #TODO
     pt.MethodSignature("arc72_Approval(address,address,uint64)")
-    (t := Token()).decode(app.state.token_box[tokenId].get())
-    (o := pt.abi.Address()).set(t.owner)
-    (u := pt.abi.make(Bytes256)).set(t.uri)
-    (c := pt.abi.Address()).set(approved)
-    t.set(o,u,c)
-    return pt.If(pt.Eq(pt.Txn.sender(), o.get())).Then(
+
+    return pt.Seq(
+    (t := Token()).decode(app.state.token_box[tokenId].get()),
+    (o := pt.abi.Address()).set(t.owner),
+    (u := pt.abi.make(Bytes256)).set(t.uri),
+    (c := pt.abi.Address()).set(approved),
+    t.set(o,u,c),
+    pt.Assert(pt.Eq(pt.Txn.sender(), o.get())),
         app.state.token_box[tokenId].set(t)
-    )  
+        )
 
 @app.external
 def arc72_setApprovalForAll(operator: pt.abi.Address, *, output: pt.abi.Bool): #TODO
