@@ -66,9 +66,10 @@ def main() -> None:
     arc72_ownerOf = app_client.call(application.arc72_ownerOf, tokenId=0, boxes=[(0, 0)])
     print(arc72_ownerOf.return_value) 
 
-    res=app_client_m.call(
+    app_client_m.call(
         application.arc72_setApprovalForAll, 
         operator=admin.address,
+        approved=True,
         boxes=[[0, control]],
         sender=member.address,
         )
@@ -82,9 +83,10 @@ def main() -> None:
         )
     arc72_ownerOf = app_client.call(application.arc72_ownerOf, tokenId=0, boxes=[(0, 0)])
     print(arc72_ownerOf.return_value) 
-    res=app_client_m.call(
+    app_client_m.call(
         application.arc72_setApprovalForAll, 
         operator=admin.address,
+        approved=False,
         boxes=[[0, control]],
         sender=member.address,
         )

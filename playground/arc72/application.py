@@ -109,22 +109,16 @@ def arc72_approve(approved: pt.abi.Address, tokenId: pt.abi.Uint64):  # TODO
 
 
 @app.external
-def arc72_setApprovalForAll(operator: pt.abi.Address, *, output: pt.abi.Bool):  # TODO
+def arc72_setApprovalForAll(operator: pt.abi.Address, approved: pt.abi.Bool):  # TODO
     pt.MethodSignature("arc72_ApprovalForAll(address,address,bool)")
-
     return pt.Seq(
         (f := pt.abi.Address()).set(pt.Txn.sender()),
         (key := Control()).set(operator, f),
-        (exist := pt.abi.Bool()).set(app.state.control_box[key].exists()),
         (b := pt.abi.Bool()).set(pt.Int(1)),
-        pt.If(exist.get()).Then(
-
-            pt.Pop(app.state.control_box[key].delete()),
-            output.set(pt.Int(0)),
-
-        ).Else(
+        pt.If(approved.get()).Then(
             app.state.control_box[key].set(b),
-            output.set(pt.Int(1)),
+        ).Else(
+            pt.Pop(app.state.control_box[key].delete()),
         )
     )
 
